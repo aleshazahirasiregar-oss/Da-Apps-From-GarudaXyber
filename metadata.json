@@ -1,0 +1,6 @@
+{
+  "name": "NoteS",
+  "description": "Style and personalize your notes with 2+ million custom themes, textures, fonts, and color palettes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

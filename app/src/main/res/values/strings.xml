@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">NoteS</string>
+    <string name="notes_title">My Notes</string>
+    <string name="theme_browser_title">2M+ Themes</string>
+    <string name="create_note">New Note</string>
+    <string name="search_notes_placeholder">Search notes, tags, themes…</string>
+    <string name="no_notes_title">No Notes Yet</string>
+    <string name="no_notes_subtitle">Create your first note and style it from 2,000,000+ themes!</string>
+    <string name="save_note">Save</string>
+    <string name="delete_note">Delete</string>
+    <string name="style_note">Style Note</string>
+    <string name="dice_random_theme">Theme Roulette</string>
+    <string name="theme_id_label">Theme #%s</string>
+</resources>
