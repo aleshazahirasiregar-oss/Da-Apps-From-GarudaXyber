@@ -11,6 +11,8 @@ jobs:
   build:
     name: Build & Test Android APK
     runs-on: ubuntu-latest
+    env:
+      JAVA_TOOL_OPTIONS: "-Djava.awt.headless=true"
 
     steps:
       - name: Checkout Code
@@ -22,23 +24,20 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Gradle
+      - name: Setup Gradle 9.3.1
         uses: gradle/actions/setup-gradle@v5
         with:
           gradle-version: '9.3.1'
 
-      - name: Prepare Gradle Wrapper
+      - name: Create debug keystore if not exists
         run: |
-          if [ -f "./gradlew" ]; then
-            chmod +x ./gradlew
-          else
-            echo "Generating Gradle wrapper..."
-            gradle wrapper --gradle-version 9.3.1
-            chmod +x ./gradlew
+          if [ ! -f "debug.keystore" ]; then
+            echo "Generating debug.keystore for headless build..."
+            keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
           fi
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace
+        run: gradle assembleDebug --stacktrace
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v5
