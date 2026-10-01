@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loading... ⏳</title>
+    <title>Click The Man</title>
     <style>
         body {
             margin: 0;
@@ -24,60 +24,140 @@
             font-size: 2.5rem;
             color: #ff0055;
             text-shadow: 0 0 10px #ff0055, 0 0 20px #ff0055;
-            animation: pulse 1s infinite alternate;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             padding: 0 20px;
         }
 
+        /* Container Stickman yang bisa diklik */
+        .stickman-container {
+            cursor: pointer;
+            display: inline-block;
+            transition: transform 0.2s;
+            animation: bounce 1.5s infinite alternate;
+        }
+
+        .stickman-container:hover {
+            transform: scale(1.1);
+        }
+
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
+        }
+
+        /* Styling Stickman SVG */
+        svg {
+            width: 120px;
+            height: 180px;
+            stroke: #00ffcc;
+            stroke-width: 4;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(0 0 10px #00ffcc);
+        }
+
+        /* Animasi Kaki & Tangan Stickman (Berjalan/Menari) */
+        .leg-left { animation: walk-leg-left 0.6s infinite alternate ease-in-out; transform-origin: 60px 110px; }
+        .leg-right { animation: walk-leg-right 0.6s infinite alternate ease-in-out; transform-origin: 60px 110px; }
+        .arm-left { animation: walk-arm-left 0.6s infinite alternate ease-in-out; transform-origin: 60px 70px; }
+        .arm-right { animation: walk-arm-right 0.6s infinite alternate ease-in-out; transform-origin: 60px 70px; }
+
+        @keyframes walk-leg-left { 0% { transform: rotate(-25deg); } 100% { transform: rotate(25deg); } }
+        @keyframes walk-leg-right { 0% { transform: rotate(25deg); } 100% { transform: rotate(-25deg); } }
+        @keyframes walk-arm-left { 0% { transform: rotate(30deg); } 100% { transform: rotate(-30deg); } }
+        @keyframes walk-arm-right { 0% { transform: rotate(-30deg); } 100% { transform: rotate(30deg); } }
+
         p {
-            font-size: 1.2rem;
-            color: #00ffcc;
+            font-size: 1.1rem;
+            color: #888;
+            margin-top: 20px;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(1.05); opacity: 1; }
-        }
-
-        /* Menyembunyikan iframe YouTube agar fokus ke efek lirik/suara */
         .hidden-player {
-            position: absolute;
-            width: 0;
-            height: 0;
-            border: 0;
-            pointer-events: none;
-            opacity: 0;
+            display: none;
         }
     </style>
 </head>
 <body>
 
-    <h1 id="dynamic-title">Loading... ⏳</h1>
-    <p>Never gonna give you up! 🎶</p>
+    <h1 id="main-title">Click The Man</h1>
 
-    <!-- YouTube Embed Full Video otomatis -->
-    <iframe class="hidden-player" 
-            src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&enablejsapi=1" 
-            allow="autoplay">
-    </iframe>
+    <!-- Stickman Button -->
+    <div class="stickman-container" onclick="startRickroll()">
+        <svg viewBox="0 0 120 180">
+            <!-- Kepala -->
+            <circle cx="60" cy="30" r="18" fill="#0f0f0f" stroke="#00ffcc" stroke-width="4"/>
+            <!-- Badan -->
+            <line x1="60" y1="48" x2="60" y2="110" />
+            <!-- Tangan -->
+            <line class="arm-left" x1="60" y1="70" x2="25" y2="95" />
+            <line class="arm-right" x1="60" y1="70" x2="95" y2="95" />
+            <!-- Kaki -->
+            <line class="leg-left" x1="60" y1="110" x2="35" y2="165" />
+            <line class="leg-right" x1="60" y1="110" x2="85" y2="165" />
+        </svg>
+        <p>Klik di sini! 👇</p>
+    </div>
+
+    <!-- YouTube Player (Tersembunyi) -->
+    <div id="player" class="hidden-player"></div>
 
     <script>
-        // Array judul dan teks sesuai lirik Rickroll
-        const rickrollLyrics = [
-            "Loading... ⏳",
-            "Never gonna give you up 🎶",
-            "Never gonna let you down 🎵",
-            "Never gonna run around...",
-            "and desert you! 😂",
-            "Got Rickrolled! 🎤"
-        ];
-        
-        let index = 0;
-        setInterval(() => {
-            index = (index + 1) % rickrollLyrics.length;
-            document.title = rickrollLyrics[index];
-            document.getElementById("dynamic-title").innerText = rickrollLyrics[index];
-        }, 2500); // Berganti setiap 2.5 detik
+        var player;
+        var isStarted = false;
+
+        // Memuat YouTube IFrame API
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '0',
+                width: '0',
+                videoId: 'dQw4w9WgXcQ',
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 0,
+                    'enablejsapi': 1
+                }
+            });
+        }
+
+        function startRickroll() {
+            if (isStarted) return;
+            isStarted = true;
+
+            // Putar video dan set volume normal (100)
+            if (player && typeof player.playVideo === 'function') {
+                player.unMute();
+                player.setVolume(100);
+                player.playVideo();
+            }
+
+            // Ubah Tampilan setelah diklik
+            document.getElementById("main-title").innerText = "Never Gonna Give You Up 🎶";
+            document.querySelector(".stickman-container").style.animation = "none";
+            document.querySelector("p").innerText = "Got Rickrolled! 😂";
+
+            // Efek lirik berjalan di judul halaman & teks
+            const rickrollLyrics = [
+                "Never gonna give you up 🎶",
+                "Never gonna let you down 🎵",
+                "Never gonna run around...",
+                "and desert you! 😂",
+                "Got Rickrolled! 🎤"
+            ];
+            
+            let index = 0;
+            setInterval(() => {
+                index = (index + 1) % rickrollLyrics.length;
+                document.title = rickrollLyrics[index];
+                document.getElementById("main-title").innerText = rickrollLyrics[index];
+            }, 2500);
+        }
     </script>
 
 </body>
